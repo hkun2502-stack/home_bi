@@ -1,0 +1,3016 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页数据分析BI看板</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        .dashboard-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .section-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #34495e;
+            margin: 30px 0 15px 0;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+        .card-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .metric-title {
+            font-size: 16px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        .metric-subtitle {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-bottom: 15px;
+        }
+        .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .metric-comparison {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+        .comparison-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .positive {
+            color: #27ae60;
+        }
+        .negative {
+            color: #e74c3c;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .full-width {
+            width: 100%;
+        }
+        .half-width {
+            width: calc(50% - 10px);
+            display: inline-block;
+            vertical-align: top;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .chart-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .chart-subtitle {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .filter-group label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .filter-group select {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        canvas {
+            max-height: 350px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-title">首页数据分析BI看板</div>
+    
+    <!-- 模块1: 首页核心指标 -->
+    <div class="section-title">首页核心指标</div>
+    <div class="card-container">
+        <div class="metric-card">
+            <div class="metric-title">页面访问总量（PV）</div>
+            <div class="metric-subtitle">/home_page_view 事件总数</div>
+            <div class="metric-value">1,245,678</div>
+            <div class="metric-comparison">
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>同比 +15.3%</span>
+                </div>
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>环比 +8.2%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">独立访客数（UV）</div>
+            <div class="metric-subtitle">访问首页的不重复用户数</div>
+            <div class="metric-value">856,234</div>
+            <div class="metric-comparison">
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>同比 +12.8%</span>
+                </div>
+                <div class="comparison-item negative">
+                    <span>↓</span>
+                    <span>环比 -2.5%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">人均访问次数</div>
+            <div class="metric-subtitle">页面访问总量 / 独立访客数</div>
+            <div class="metric-value">1.45</div>
+            <div class="metric-comparison">
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>同比 +2.2%</span>
+                </div>
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>环比 +10.8%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">首页跳出率</div>
+            <div class="metric-subtitle">单次访问用户数 / 总UV</div>
+            <div class="metric-value">32.5%</div>
+            <div class="metric-comparison">
+                <div class="comparison-item negative">
+                    <span>↑</span>
+                    <span>同比 +3.1%</span>
+                </div>
+                <div class="comparison-item positive">
+                    <span>↓</span>
+                    <span>环比 -1.8%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 模块2: 首页数据分析 -->
+    <div class="section-title">首页数据分析</div>
+    
+    <!-- 2-1 流量趋势 -->
+    <div class="chart-container full-width">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">流量趋势</div>
+                <div class="chart-subtitle">柱状图展示所选指标，折线图展示同比/环比</div>
+            </div>
+            <div class="filter-group">
+                <label>指标：</label>
+                <select id="metricSelect" onchange="updateTrendChart()">
+                    <option value="pv">页面访问总量（PV）</option>
+                    <option value="uv">独立访客数（UV）</option>
+                    <option value="avg">人均访问次数</option>
+                    <option value="bounce">首页跳出率</option>
+                </select>
+                <label>对比：</label>
+                <select id="compareSelect" onchange="updateTrendChart()">
+                    <option value="yoy">同比</option>
+                    <option value="mom">环比</option>
+                </select>
+            </div>
+        </div>
+        <canvas id="trendChart"></canvas>
+    </div>
+    
+    <!-- 2-2 用户构成 -->
+    <div class="row">
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">用户构成</div>
+                    <div class="chart-subtitle">MTD登录用户与游客占比</div>
+                </div>
+            </div>
+            <canvas id="userPieChart"></canvas>
+        </div>
+        
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">用户构成趋势</div>
+                    <div class="chart-subtitle">每日登录用户与游客占比变化</div>
+                </div>
+            </div>
+            <canvas id="userTrendChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- 用户互动深度 -->
+    <div class="row">
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">用户互动深度</div>
+                    <div class="chart-subtitle">浅层、中层、深层互动用户数</div>
+                </div>
+                <div class="filter-group">
+                    <label>指标：</label>
+                    <select id="interactionSelect" onchange="updateInteractionChart()">
+                        <option value="shallow">浅层互动用户数</option>
+                        <option value="medium">中层互动用户数</option>
+                        <option value="deep">深层互动用户数</option>
+                    </select>
+                    <label>对比：</label>
+                    <select id="interactionCompare" onchange="updateInteractionChart()">
+                        <option value="yoy">同比</option>
+                        <option value="mom">环比</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="interactionChart"></canvas>
+        </div>
+        
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">互动深度占比趋势</div>
+                    <div class="chart-subtitle">各层级互动用户占比变化</div>
+                </div>
+            </div>
+            <canvas id="interactionTrendChart"></canvas>
+        </div>
+    </div>
+
+    <!-- 模块3: 首页Banner分析 -->
+    <div class="section-title">首页Banner分析</div>
+    
+    <!-- 3-1 Banner明细数据 -->
+    <div class="chart-container full-width">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Banner明细数据</div>
+                <div class="chart-subtitle">各Banner详细指标数据</div>
+            </div>
+        </div>
+        <div style="overflow-x: auto;">
+            <table id="bannerTable" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #ecf0f1; border-bottom: 2px solid #bdc3c7;">
+                        <th style="padding: 12px; text-align: left; font-size: 14px; color: #2c3e50;">Banner ID</th>
+                        <th style="padding: 12px; text-align: center; font-size: 14px; color: #2c3e50;">上架天数</th>
+                        <th style="padding: 12px; text-align: center; font-size: 14px; color: #2c3e50;">上架栏位</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">点击量</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">点击率(CTR)</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">日均点击量</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">日均点击率</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">环比变化</th>
+                    </tr>
+                </thead>
+                <tbody id="bannerTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- 3-2 和 3-3 -->
+    <div class="row">
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">各Banner点击量分布</div>
+                    <div class="chart-subtitle">不同Banner的指标对比</div>
+                </div>
+                <div class="filter-group">
+                    <label>指标：</label>
+                    <select id="bannerMetricSelect" onchange="updateBannerChart()">
+                        <option value="clicks">点击量</option>
+                        <option value="ctr">点击率(%)</option>
+                        <option value="avgClicks">日均点击量</option>
+                        <option value="avgCtr">日均点击率(%)</option>
+                    </select>
+                    <label>排序：</label>
+                    <select id="bannerSortSelect" onchange="updateBannerChart()">
+                        <option value="desc">降序</option>
+                        <option value="asc">升序</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="bannerDistChart"></canvas>
+        </div>
+        
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">不同Banner点击占比趋势</div>
+                    <div class="chart-subtitle">各Banner每日占比变化（堆积100%）</div>
+                </div>
+                <div class="filter-group">
+                    <label>指标：</label>
+                    <select id="bannerStackMetricSelect" onchange="updateBannerStackChart()">
+                        <option value="clicks">点击量</option>
+                        <option value="ctr">点击率(%)</option>
+                        <option value="avgClicks">日均点击量</option>
+                        <option value="avgCtr">日均点击率(%)</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="bannerStackChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- 模块4: 首页在线课程分析 -->
+    <div class="section-title">首页在线课程分析</div>
+    
+    <!-- 4-1 在线课程基本数据 - 四张卡片 -->
+    <div class="card-container">
+        <div class="metric-card">
+            <div class="metric-title">查看全部点击量</div>
+            <div class="metric-subtitle">home_view_all_to_online_course_click 事件总数</div>
+            <div class="metric-value">85,432</div>
+            <div class="metric-comparison">
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>同比 +18.5%</span>
+                </div>
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>环比 +6.8%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">查看全部转化率</div>
+            <div class="metric-subtitle">查看全部点击量 / 页面访问量</div>
+            <div class="metric-value">6.86%</div>
+            <div class="metric-comparison">
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>同比 +2.8%</span>
+                </div>
+                <div class="comparison-item negative">
+                    <span>↓</span>
+                    <span>环比 -1.2%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">运营位课程点击量</div>
+            <div class="metric-subtitle">运营位课程点击事件总数</div>
+            <div class="metric-value">124,567</div>
+            <div class="metric-comparison">
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>环比 +12.3%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">运营位课程点击率</div>
+            <div class="metric-subtitle">运营位点击量 / 页面访问量</div>
+            <div class="metric-value">10.0%</div>
+            <div class="metric-comparison">
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>环比 +3.9%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 4-1 在线课程趋势图 -->
+    <div class="chart-container full-width">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">在线课程数据趋势</div>
+                <div class="chart-subtitle">柱状图展示所选指标，折线图展示同比/环比</div>
+            </div>
+            <div class="filter-group">
+                <label>指标类型：</label>
+                <select id="courseTypeSelect" onchange="updateCourseTrendChart()">
+                    <option value="viewAll">查看全部</option>
+                    <option value="operation">运营位课程</option>
+                </select>
+                <label>数据维度：</label>
+                <select id="courseDataSelect" onchange="updateCourseTrendChart()">
+                    <option value="clicks">点击量</option>
+                    <option value="rate">点击率</option>
+                </select>
+                <label>对比：</label>
+                <select id="courseCompareSelect" onchange="updateCourseTrendChart()">
+                    <option value="yoy">同比</option>
+                    <option value="mom">环比</option>
+                </select>
+            </div>
+        </div>
+        <canvas id="courseTrendChart"></canvas>
+    </div>
+    
+    <!-- 4-2 Tab交互分析 -->
+    <div class="row">
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">各Tab点击量分布</div>
+                    <div class="chart-subtitle">不同Tab的点击量占比</div>
+                </div>
+            </div>
+            <canvas id="tabPieChart"></canvas>
+        </div>
+        
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">各Tab点击量分布趋势</div>
+                    <div class="chart-subtitle">各Tab每日点击量占比变化（堆积100%）</div>
+                </div>
+            </div>
+            <canvas id="tabTrendChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- 4-3 课程推荐效果分析 - 明细表格 -->
+    <div class="chart-container full-width">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">推荐课程明细数据</div>
+                <div class="chart-subtitle">各推荐课程详细指标数据</div>
+            </div>
+        </div>
+        <div style="overflow-x: auto;">
+            <table id="courseTable" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #ecf0f1; border-bottom: 2px solid #bdc3c7;">
+                        <th style="padding: 12px; text-align: left; font-size: 14px; color: #2c3e50;">课程名称</th>
+                        <th style="padding: 12px; text-align: center; font-size: 14px; color: #2c3e50;">上架天数</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">点击量</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">点击率(CTR)</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">日均点击量</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">日均点击率</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">环比变化</th>
+                    </tr>
+                </thead>
+                <tbody id="courseTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- 4-3 推荐课程点击量分布 -->
+    <div class="row">
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">推荐课程点击量分布</div>
+                    <div class="chart-subtitle">不同课程的指标对比</div>
+                </div>
+                <div class="filter-group">
+                    <label>指标：</label>
+                    <select id="courseMetricSelect" onchange="updateCourseChart()">
+                        <option value="clicks">点击量</option>
+                        <option value="ctr">点击率(%)</option>
+                        <option value="avgClicks">日均点击量</option>
+                        <option value="avgCtr">日均点击率(%)</option>
+                    </select>
+                    <label>排序：</label>
+                    <select id="courseSortSelect" onchange="updateCourseChart()">
+                        <option value="desc">降序</option>
+                        <option value="asc">升序</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="courseDistChart"></canvas>
+        </div>
+        
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">推荐课程点击占比趋势</div>
+                    <div class="chart-subtitle">各课程每日占比变化（堆积100%）</div>
+                </div>
+            </div>
+            <canvas id="courseStackChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- 模块5: 首页动手实验分析 -->
+    <div class="section-title">首页动手实验分析</div>
+    
+    <!-- 5-1 动手实验基本数据 -->
+    <div class="row">
+        <div style="width: calc(50% - 10px); display: inline-block; vertical-align: top;">
+            <div class="card-container" style="flex-direction: column; gap: 20px;">
+                <div class="metric-card" style="width: 100%;">
+                    <div class="metric-title">查看全部点击量</div>
+                    <div class="metric-subtitle">动手实验查看全部点击事件总数</div>
+                    <div class="metric-value">52,834</div>
+                    <div class="metric-comparison">
+                        <div class="comparison-item positive">
+                            <span>↑</span>
+                            <span>同比 +24.3%</span>
+                        </div>
+                        <div class="comparison-item positive">
+                            <span>↑</span>
+                            <span>环比 +9.7%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="metric-card" style="width: 100%;">
+                    <div class="metric-title">查看全部转化率</div>
+                    <div class="metric-subtitle">查看全部点击量 / 页面访问量</div>
+                    <div class="metric-value">4.24%</div>
+                    <div class="metric-comparison">
+                        <div class="comparison-item positive">
+                            <span>↑</span>
+                            <span>同比 +3.5%</span>
+                        </div>
+                        <div class="comparison-item negative">
+                            <span>↓</span>
+                            <span>环比 -0.8%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-container half-width" style="margin: 0;">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">动手实验数据趋势</div>
+                    <div class="chart-subtitle">柱状图展示所选指标，折线图展示同比/环比</div>
+                </div>
+                <div class="filter-group">
+                    <label>数据维度：</label>
+                    <select id="labDataSelect" onchange="updateLabTrendChart()">
+                        <option value="clicks">点击量</option>
+                        <option value="rate">转化率</option>
+                    </select>
+                    <label>对比：</label>
+                    <select id="labCompareSelect" onchange="updateLabTrendChart()">
+                        <option value="yoy">同比</option>
+                        <option value="mom">环比</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="labTrendChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- 5-2 实验Tab交互分析 -->
+    <div class="row">
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">实验Tab点击量分布</div>
+                    <div class="chart-subtitle">不同实验Tab的点击量占比</div>
+                </div>
+            </div>
+            <canvas id="labTabPieChart"></canvas>
+        </div>
+        
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">实验Tab点击量分布趋势</div>
+                    <div class="chart-subtitle">各Tab每日点击量占比变化（堆积100%）</div>
+                </div>
+            </div>
+            <canvas id="labTabTrendChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- 5-3 实验推荐效果分析 - 明细表格 -->
+    <div class="chart-container full-width">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">推荐实验明细数据</div>
+                <div class="chart-subtitle">各推荐实验详细指标数据</div>
+            </div>
+        </div>
+        <div style="overflow-x: auto;">
+            <table id="labTable" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #ecf0f1; border-bottom: 2px solid #bdc3c7;">
+                        <th style="padding: 12px; text-align: left; font-size: 14px; color: #2c3e50;">实验名称</th>
+                        <th style="padding: 12px; text-align: center; font-size: 14px; color: #2c3e50;">上架天数</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">点击量</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">点击率(CTR)</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">日均点击量</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">日均点击率</th>
+                        <th style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">环比变化</th>
+                    </tr>
+                </thead>
+                <tbody id="labTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- 5-3 推荐实验点击量分布 -->
+    <div class="row">
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">推荐实验点击量分布</div>
+                    <div class="chart-subtitle">不同实验的指标对比</div>
+                </div>
+                <div class="filter-group">
+                    <label>指标：</label>
+                    <select id="labMetricSelect" onchange="updateLabChart()">
+                        <option value="clicks">点击量</option>
+                        <option value="ctr">点击率(%)</option>
+                        <option value="avgClicks">日均点击量</option>
+                        <option value="avgCtr">日均点击率(%)</option>
+                    </select>
+                    <label>排序：</label>
+                    <select id="labSortSelect" onchange="updateLabChart()">
+                        <option value="desc">降序</option>
+                        <option value="asc">升序</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="labDistChart"></canvas>
+        </div>
+        
+        <div class="chart-container half-width">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">推荐实验点击占比趋势</div>
+                    <div class="chart-subtitle">各实验每日占比变化（堆积100%）</div>
+                </div>
+            </div>
+            <canvas id="labStackChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- 模块6: 首页认证考试分析 -->
+    <div class="section-title">首页认证考试分析</div>
+    
+    <!-- 6-1 首页认证基本数据 -->
+    <div class="chart-container full-width">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">首页认证数据趋势</div>
+                <div class="chart-subtitle">柱状图展示所选指标，折线图展示同比/环比</div>
+            </div>
+            <div class="filter-group">
+                <label>指标类型：</label>
+                <select id="certTypeSelect" onchange="updateCertTrendChart()">
+                    <option value="card">认证卡片点击</option>
+                    <option value="overview">认证总览转化</option>
+                </select>
+                <label>数据维度：</label>
+                <select id="certDataSelect" onchange="updateCertTrendChart()">
+                    <option value="clicks">点击量</option>
+                    <option value="rate">点击率</option>
+                </select>
+                <label>对比：</label>
+                <select id="certCompareSelect" onchange="updateCertTrendChart()">
+                    <option value="yoy">同比</option>
+                    <option value="mom">环比</option>
+                </select>
+            </div>
+        </div>
+        <canvas id="certTrendChart"></canvas>
+    </div>
+    
+    <!-- 6-2 认证推荐效果分析 -->
+    <div class="row">
+        <div class="chart-container" style="width: calc(33.33% - 14px); display: inline-block; vertical-align: top;">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">推荐认证点击量分布</div>
+                    <div class="chart-subtitle">各认证点击量占比</div>
+                </div>
+            </div>
+            <canvas id="certPieChart"></canvas>
+        </div>
+        
+        <div class="chart-container" style="width: calc(66.67% - 14px); display: inline-block; vertical-align: top; margin-left: 20px;">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">推荐认证点击量占比趋势</div>
+                    <div class="chart-subtitle">各认证每日点击量占比变化（堆积100%）</div>
+                </div>
+            </div>
+            <canvas id="certStackChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- 模块7: 首页底部模块分析 -->
+    <div class="section-title">首页底部模块分析</div>
+    
+    <!-- 7-1 视频模块基本数据 - 四张卡片 -->
+    <div class="card-container">
+        <div class="metric-card">
+            <div class="metric-title">视频播放率</div>
+            <div class="metric-subtitle">视频点击量 / 首页PV</div>
+            <div class="metric-value">8.32%</div>
+            <div class="metric-comparison">
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>同比 +16.8%</span>
+                </div>
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>环比 +5.3%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">平均观看时长</div>
+            <div class="metric-subtitle">平均播放时长（秒）</div>
+            <div class="metric-value">125秒</div>
+            <div class="metric-comparison">
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>同比 +8.5%</span>
+                </div>
+                <div class="comparison-item negative">
+                    <span>↓</span>
+                    <span>环比 -2.1%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">平均播放进度</div>
+            <div class="metric-subtitle">平均播放时长 / 192秒</div>
+            <div class="metric-value">65.1%</div>
+            <div class="metric-comparison">
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>同比 +7.2%</span>
+                </div>
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>环比 +3.8%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">视频完播率</div>
+            <div class="metric-subtitle">播放进度≥95%的次数 / 播放次数</div>
+            <div class="metric-value">42.3%</div>
+            <div class="metric-comparison">
+                <div class="comparison-item positive">
+                    <span>↑</span>
+                    <span>同比 +12.4%</span>
+                </div>
+                <div class="comparison-item negative">
+                    <span>↓</span>
+                    <span>环比 -1.5%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 7-1 视频模块趋势图 -->
+    <div class="chart-container full-width">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">视频模块数据趋势</div>
+                <div class="chart-subtitle">柱状图展示所选指标，折线图展示同比/环比</div>
+            </div>
+            <div class="filter-group">
+                <label>指标：</label>
+                <select id="videoMetricSelect" onchange="updateVideoTrendChart()">
+                    <option value="playRate">视频播放率(%)</option>
+                    <option value="avgDuration">平均观看时长(秒)</option>
+                    <option value="avgProgress">平均播放进度(%)</option>
+                    <option value="completeRate">视频完播率(%)</option>
+                </select>
+                <label>对比：</label>
+                <select id="videoCompareSelect" onchange="updateVideoTrendChart()">
+                    <option value="yoy">同比</option>
+                    <option value="mom">环比</option>
+                </select>
+            </div>
+        </div>
+        <canvas id="videoTrendChart"></canvas>
+    </div>
+    
+    <!-- 7-2 海报模块基本数据 -->
+    <div class="row">
+        <div style="width: calc(33.33% - 14px); display: inline-block; vertical-align: top;">
+            <div class="card-container" style="flex-direction: column; gap: 20px;">
+                <div class="metric-card" style="width: 100%;">
+                    <div class="metric-title">海报点击量</div>
+                    <div class="metric-subtitle">home_bottom_poster_click 事件总数</div>
+                    <div class="metric-value">38,567</div>
+                    <div class="metric-comparison">
+                        <div class="comparison-item positive">
+                            <span>↑</span>
+                            <span>同比 +19.2%</span>
+                        </div>
+                        <div class="comparison-item positive">
+                            <span>↑</span>
+                            <span>环比 +7.6%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="metric-card" style="width: 100%;">
+                    <div class="metric-title">海报点击率</div>
+                    <div class="metric-subtitle">海报点击UV / 页面访问UV</div>
+                    <div class="metric-value">3.10%</div>
+                    <div class="metric-comparison">
+                        <div class="comparison-item positive">
+                            <span>↑</span>
+                            <span>同比 +5.8%</span>
+                        </div>
+                        <div class="comparison-item negative">
+                            <span>↓</span>
+                            <span>环比 -1.3%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-container" style="width: calc(66.67% - 14px); display: inline-block; vertical-align: top; margin-left: 20px; margin-bottom: 0;">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">海报模块数据趋势</div>
+                    <div class="chart-subtitle">柱状图展示所选指标，折线图展示同比/环比</div>
+                </div>
+                <div class="filter-group">
+                    <label>指标：</label>
+                    <select id="posterDataSelect" onchange="updatePosterTrendChart()">
+                        <option value="clicks">点击量</option>
+                        <option value="rate">点击率(%)</option>
+                    </select>
+                    <label>对比：</label>
+                    <select id="posterCompareSelect" onchange="updatePosterTrendChart()">
+                        <option value="yoy">同比</option>
+                        <option value="mom">环比</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="posterTrendChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- 模块8: 全局导航栏分析 -->
+    <div class="section-title">全局导航栏分析</div>
+    
+    <!-- 8-1 导航使用情况 -->
+    <div class="chart-container full-width">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">导航使用情况趋势</div>
+                <div class="chart-subtitle">柱状图展示所选指标，折线图展示同比/环比</div>
+            </div>
+            <div class="filter-group">
+                <label>导航类型：</label>
+                <select id="navTypeSelect" onchange="updateNavTrendChart()">
+                    <option value="course">在线课程导航</option>
+                    <option value="lab">动手实操导航</option>
+                    <option value="cert">认证考试导航</option>
+                    <option value="training">企业培训导航</option>
+                </select>
+                <label>数据维度：</label>
+                <select id="navDataSelect" onchange="updateNavTrendChart()">
+                    <option value="clicks">点击量</option>
+                    <option value="rate">点击率(%)</option>
+                </select>
+                <label>对比：</label>
+                <select id="navCompareSelect" onchange="updateNavTrendChart()">
+                    <option value="yoy">同比</option>
+                    <option value="mom">环比</option>
+                </select>
+            </div>
+        </div>
+        <canvas id="navTrendChart"></canvas>
+    </div>
+    
+    <!-- 8-2 导航点击占比 -->
+    <div class="row">
+        <div class="chart-container" style="width: calc(33.33% - 14px); display: inline-block; vertical-align: top;">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">导航点击量分布</div>
+                    <div class="chart-subtitle">4个导航入口的点击量占比</div>
+                </div>
+            </div>
+            <canvas id="navPieChart"></canvas>
+        </div>
+        
+        <div class="chart-container" style="width: calc(66.67% - 14px); display: inline-block; vertical-align: top; margin-left: 20px;">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">导航点击量分布趋势</div>
+                    <div class="chart-subtitle">各导航入口每日点击量占比变化（堆积100%）</div>
+                </div>
+            </div>
+            <canvas id="navStackChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // 生成虚拟日期数据
+        function generateDates(days) {
+            const dates = [];
+            const today = new Date();
+            for (let i = days - 1; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                dates.push((d.getMonth() + 1) + '/' + d.getDate());
+            }
+            return dates;
+        }
+        
+        // 生成随机数据
+        function generateData(base, variance, length) {
+            return Array.from({length}, () => 
+                Math.floor(base + (Math.random() - 0.5) * variance)
+            );
+        }
+        
+        const dates = generateDates(30);
+        
+        // 流量趋势数据
+        const trendData = {
+            pv: {
+                current: generateData(42000, 8000, 30),
+                compare: Array.from({length: 30}, () => (Math.random() * 30 - 5).toFixed(1))
+            },
+            uv: {
+                current: generateData(28000, 5000, 30),
+                compare: Array.from({length: 30}, () => (Math.random() * 25 - 3).toFixed(1))
+            },
+            avg: {
+                current: Array.from({length: 30}, () => (1.3 + Math.random() * 0.4).toFixed(2)),
+                compare: Array.from({length: 30}, () => (Math.random() * 20 - 5).toFixed(1))
+            },
+            bounce: {
+                current: Array.from({length: 30}, () => (28 + Math.random() * 10).toFixed(1)),
+                compare: Array.from({length: 30}, () => (Math.random() * 15 - 7).toFixed(1))
+            }
+        };
+        
+        // 流量趋势图
+        let trendChart = new Chart(document.getElementById('trendChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '页面访问总量（PV）',
+                    data: trendData.pv.current,
+                    backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }, {
+                    label: '同比变化(%)',
+                    data: trendData.pv.compare,
+                    type: 'line',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    borderWidth: 2,
+                    yAxisID: 'y1',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '数值'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '变化率(%)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateTrendChart() {
+            const metric = document.getElementById('metricSelect').value;
+            const compare = document.getElementById('compareSelect').value;
+            const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
+            
+            const labels = {
+                pv: '页面访问总量（PV）',
+                uv: '独立访客数（UV）',
+                avg: '人均访问次数',
+                bounce: '首页跳出率(%)'
+            };
+            
+            trendChart.data.datasets[0].label = labels[metric];
+            trendChart.data.datasets[0].data = trendData[metric].current;
+            trendChart.data.datasets[1].label = compareLabel;
+            trendChart.data.datasets[1].data = trendData[metric].compare;
+            trendChart.update();
+        }
+        
+        // 用户构成饼图
+        new Chart(document.getElementById('userPieChart'), {
+            type: 'pie',
+            data: {
+                labels: ['登录用户', '游客'],
+                datasets: [{
+                    data: [68, 32],
+                    backgroundColor: [
+                        'rgba(52, 152, 219, 0.8)',
+                        'rgba(155, 89, 182, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(52, 152, 219, 1)',
+                        'rgba(155, 89, 182, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 用户构成趋势堆积柱状图
+        new Chart(document.getElementById('userTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '登录用户占比(%)',
+                    data: Array.from({length: 30}, () => 65 + Math.random() * 10),
+                    backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1
+                }, {
+                    label: '游客占比(%)',
+                    data: Array.from({length: 30}, () => 30 + Math.random() * 10),
+                    backgroundColor: 'rgba(155, 89, 182, 0.8)',
+                    borderColor: 'rgba(155, 89, 182, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '占比(%)'
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 互动深度数据
+        const interactionData = {
+            shallow: {
+                current: generateData(12000, 3000, 30),
+                compare: Array.from({length: 30}, () => (Math.random() * 20 - 8).toFixed(1))
+            },
+            medium: {
+                current: generateData(10000, 2500, 30),
+                compare: Array.from({length: 30}, () => (Math.random() * 18 - 5).toFixed(1))
+            },
+            deep: {
+                current: generateData(6000, 1500, 30),
+                compare: Array.from({length: 30}, () => (Math.random() * 25 - 3).toFixed(1))
+            }
+        };
+        
+        // 互动深度图
+        let interactionChart = new Chart(document.getElementById('interactionChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '浅层互动用户数',
+                    data: interactionData.shallow.current,
+                    backgroundColor: 'rgba(241, 196, 15, 0.6)',
+                    borderColor: 'rgba(241, 196, 15, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }, {
+                    label: '同比变化(%)',
+                    data: interactionData.shallow.compare,
+                    type: 'line',
+                    borderColor: 'rgba(231, 76, 60, 1)',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    borderWidth: 2,
+                    yAxisID: 'y1',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '用户数'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '变化率(%)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateInteractionChart() {
+            const metric = document.getElementById('interactionSelect').value;
+            const compare = document.getElementById('interactionCompare').value;
+            const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
+            
+            const labels = {
+                shallow: '浅层互动用户数',
+                medium: '中层互动用户数',
+                deep: '深层互动用户数'
+            };
+            
+            interactionChart.data.datasets[0].label = labels[metric];
+            interactionChart.data.datasets[0].data = interactionData[metric].current;
+            interactionChart.data.datasets[1].label = compareLabel;
+            interactionChart.data.datasets[1].data = interactionData[metric].compare;
+            interactionChart.update();
+        }
+        
+        // 互动深度占比趋势堆积柱状图
+        new Chart(document.getElementById('interactionTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '浅层互动用户占比(%)',
+                    data: Array.from({length: 30}, () => 40 + Math.random() * 10),
+                    backgroundColor: 'rgba(241, 196, 15, 0.8)',
+                    borderColor: 'rgba(241, 196, 15, 1)',
+                    borderWidth: 1
+                }, {
+                    label: '中层互动用户占比(%)',
+                    data: Array.from({length: 30}, () => 35 + Math.random() * 8),
+                    backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1
+                }, {
+                    label: '深层互动用户占比(%)',
+                    data: Array.from({length: 30}, () => 20 + Math.random() * 8),
+                    backgroundColor: 'rgba(46, 204, 113, 0.8)',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '占比(%)'
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Banner数据
+        const bannerColors = [
+            'rgba(231, 76, 60, 0.8)',
+            'rgba(52, 152, 219, 0.8)',
+            'rgba(46, 204, 113, 0.8)',
+            'rgba(155, 89, 182, 0.8)',
+            'rgba(241, 196, 15, 0.8)',
+            'rgba(230, 126, 34, 0.8)'
+        ];
+        
+        const bannerData = [
+            {
+                id: 'Banner_A',
+                days: 28,
+                position: 1,
+                clicks: 45230,
+                ctr: 3.63,
+                change: 8.5
+            },
+            {
+                id: 'Banner_B',
+                days: 25,
+                position: 2,
+                clicks: 38950,
+                ctr: 3.13,
+                change: -2.3
+            },
+            {
+                id: 'Banner_C',
+                days: 30,
+                position: 3,
+                clicks: 32180,
+                ctr: 2.58,
+                change: 12.7
+            },
+            {
+                id: 'Banner_D',
+                days: 22,
+                position: 4,
+                clicks: 28760,
+                ctr: 2.31,
+                change: -5.8
+            },
+            {
+                id: 'Banner_E',
+                days: 18,
+                position: 1,
+                clicks: 24390,
+                ctr: 1.96,
+                change: 15.2
+            },
+            {
+                id: 'Banner_F',
+                days: 15,
+                position: 2,
+                clicks: 19820,
+                ctr: 1.59,
+                change: 3.9
+            }
+        ];
+        
+        // 计算日均值
+        bannerData.forEach(b => {
+            b.avgClicks = Math.round(b.clicks / b.days);
+            b.avgCtr = (b.ctr / b.days).toFixed(3);
+        });
+        
+        // 填充Banner表格
+        function populateBannerTable() {
+            const tbody = document.getElementById('bannerTableBody');
+            tbody.innerHTML = '';
+            
+            bannerData.forEach((banner, index) => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #ecf0f1';
+                row.innerHTML = `
+                    <td style="padding: 12px; font-size: 14px; color: #34495e; font-weight: 500;">${banner.id}</td>
+                    <td style="padding: 12px; text-align: center; font-size: 14px; color: #7f8c8d;">${banner.days}天</td>
+                    <td style="padding: 12px; text-align: center; font-size: 14px; color: #7f8c8d;">位置${banner.position}</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50; font-weight: 500;">${banner.clicks.toLocaleString()}</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">${banner.ctr}%</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">${banner.avgClicks.toLocaleString()}</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">${banner.avgCtr}%</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: ${banner.change > 0 ? '#27ae60' : '#e74c3c'}; font-weight: 500;">
+                        ${banner.change > 0 ? '↑' : '↓'} ${Math.abs(banner.change)}%
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        populateBannerTable();
+        
+        // Banner分布图
+        let bannerDistChart = new Chart(document.getElementById('bannerDistChart'), {
+            type: 'bar',
+            data: {
+                labels: bannerData.map(b => b.id),
+                datasets: [{
+                    label: '点击量',
+                    data: bannerData.map(b => b.clicks),
+                    backgroundColor: bannerColors,
+                    borderColor: bannerColors.map(c => c.replace('0.8', '1')),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '点击量'
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateBannerChart() {
+            const metric = document.getElementById('bannerMetricSelect').value;
+            const sort = document.getElementById('bannerSortSelect').value;
+            
+            const metricLabels = {
+                clicks: '点击量',
+                ctr: '点击率(%)',
+                avgClicks: '日均点击量',
+                avgCtr: '日均点击率(%)'
+            };
+            
+            let sortedData = [...bannerData].sort((a, b) => {
+                return sort === 'desc' ? b[metric] - a[metric] : a[metric] - b[metric];
+            });
+            
+            bannerDistChart.data.labels = sortedData.map(b => b.id);
+            bannerDistChart.data.datasets[0].label = metricLabels[metric];
+            bannerDistChart.data.datasets[0].data = sortedData.map(b => b[metric]);
+            bannerDistChart.options.scales.y.title.text = metricLabels[metric];
+            bannerDistChart.update();
+        }
+        
+        // 生成每日Banner数据
+        function generateBannerDailyData() {
+            const dailyData = {};
+            dates.forEach(date => {
+                dailyData[date] = {};
+                bannerData.forEach(banner => {
+                    const baseValue = banner.clicks / 30;
+                    dailyData[date][banner.id] = Math.floor(baseValue * (0.8 + Math.random() * 0.4));
+                });
+            });
+            return dailyData;
+        }
+        
+        const bannerDailyData = generateBannerDailyData();
+        
+        // Banner堆积图
+        let bannerStackChart = new Chart(document.getElementById('bannerStackChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: bannerData.map((banner, index) => ({
+                    label: banner.id,
+                    data: dates.map(date => {
+                        const total = Object.values(bannerDailyData[date]).reduce((a, b) => a + b, 0);
+                        return ((bannerDailyData[date][banner.id] / total) * 100).toFixed(1);
+                    }),
+                    backgroundColor: bannerColors[index],
+                    borderColor: bannerColors[index].replace('0.8', '1'),
+                    borderWidth: 1
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '占比(%)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateBannerStackChart() {
+            const metric = document.getElementById('bannerStackMetricSelect').value;
+            
+            const metricLabels = {
+                clicks: '点击量占比',
+                ctr: '点击率占比',
+                avgClicks: '日均点击量占比',
+                avgCtr: '日均点击率占比'
+            };
+            
+            // 更新Y轴标题
+            bannerStackChart.options.scales.y.title.text = metricLabels[metric] + '(%)';
+            bannerStackChart.update();
+        }
+        
+        // ========== 模块4: 在线课程数据 ==========
+        
+        // 课程趋势数据
+        const courseTrendData = {
+            viewAll: {
+                clicks: generateData(2800, 600, 30),
+                rate: Array.from({length: 30}, () => (6.5 + Math.random() * 1.5).toFixed(2)),
+                compare: Array.from({length: 30}, () => (Math.random() * 25 - 5).toFixed(1))
+            },
+            operation: {
+                clicks: generateData(4100, 800, 30),
+                rate: Array.from({length: 30}, () => (9.5 + Math.random() * 2).toFixed(2)),
+                compare: Array.from({length: 30}, () => (Math.random() * 20 - 3).toFixed(1))
+            }
+        };
+        
+        // 课程趋势图
+        let courseTrendChart = new Chart(document.getElementById('courseTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '查看全部点击量',
+                    data: courseTrendData.viewAll.clicks,
+                    backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }, {
+                    label: '同比变化(%)',
+                    data: courseTrendData.viewAll.compare,
+                    type: 'line',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    borderWidth: 2,
+                    yAxisID: 'y1',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '数值'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '变化率(%)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateCourseTrendChart() {
+            const type = document.getElementById('courseTypeSelect').value;
+            const data = document.getElementById('courseDataSelect').value;
+            const compare = document.getElementById('courseCompareSelect').value;
+            
+            const typeLabels = {
+                viewAll: '查看全部',
+                operation: '运营位课程'
+            };
+            
+            const dataLabels = {
+                clicks: '点击量',
+                rate: '点击率(%)'
+            };
+            
+            const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
+            
+            courseTrendChart.data.datasets[0].label = typeLabels[type] + dataLabels[data];
+            courseTrendChart.data.datasets[0].data = data === 'clicks' ? 
+                courseTrendData[type].clicks : courseTrendData[type].rate;
+            courseTrendChart.data.datasets[1].label = compareLabel;
+            courseTrendChart.data.datasets[1].data = courseTrendData[type].compare;
+            courseTrendChart.update();
+        }
+        
+        // Tab数据
+        const tabNames = ['大咖分享', '产品攻略', '通用技术', '认证备考', '应用实战', '行业案例'];
+        const tabColors = [
+            'rgba(231, 76, 60, 0.8)',
+            'rgba(52, 152, 219, 0.8)',
+            'rgba(46, 204, 113, 0.8)',
+            'rgba(155, 89, 182, 0.8)',
+            'rgba(241, 196, 15, 0.8)',
+            'rgba(230, 126, 34, 0.8)'
+        ];
+        
+        const tabClicks = [18500, 22300, 19800, 15600, 24200, 20100];
+        
+        // Tab饼图
+        new Chart(document.getElementById('tabPieChart'), {
+            type: 'pie',
+            data: {
+                labels: tabNames,
+                datasets: [{
+                    data: tabClicks,
+                    backgroundColor: tabColors,
+                    borderColor: tabColors.map(c => c.replace('0.8', '1')),
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return context.label + ': ' + context.parsed.toLocaleString() + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 生成Tab每日数据
+        function generateTabDailyData() {
+            const dailyData = {};
+            dates.forEach(date => {
+                dailyData[date] = {};
+                tabNames.forEach((tab, index) => {
+                    const baseValue = tabClicks[index] / 30;
+                    dailyData[date][tab] = Math.floor(baseValue * (0.8 + Math.random() * 0.4));
+                });
+            });
+            return dailyData;
+        }
+        
+        const tabDailyData = generateTabDailyData();
+        
+        // Tab趋势堆积图
+        new Chart(document.getElementById('tabTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: tabNames.map((tab, index) => ({
+                    label: tab,
+                    data: dates.map(date => {
+                        const total = Object.values(tabDailyData[date]).reduce((a, b) => a + b, 0);
+                        return ((tabDailyData[date][tab] / total) * 100).toFixed(1);
+                    }),
+                    backgroundColor: tabColors[index],
+                    borderColor: tabColors[index].replace('0.8', '1'),
+                    borderWidth: 1
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '占比(%)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 推荐课程数据
+        const courseColors = [
+            'rgba(231, 76, 60, 0.8)',
+            'rgba(52, 152, 219, 0.8)',
+            'rgba(46, 204, 113, 0.8)',
+            'rgba(155, 89, 182, 0.8)',
+            'rgba(241, 196, 15, 0.8)',
+            'rgba(230, 126, 34, 0.8)',
+            'rgba(236, 240, 241, 0.8)',
+            'rgba(149, 165, 166, 0.8)'
+        ];
+        
+        const courseData = [
+            {
+                name: 'Python数据分析实战',
+                days: 28,
+                clicks: 35680,
+                ctr: 2.86,
+                change: 15.2
+            },
+            {
+                name: 'AI大模型应用开发',
+                days: 25,
+                clicks: 32450,
+                ctr: 2.60,
+                change: 22.8
+            },
+            {
+                name: '云计算架构设计',
+                days: 30,
+                clicks: 28930,
+                ctr: 2.32,
+                change: -3.5
+            },
+            {
+                name: '前端框架Vue3实战',
+                days: 22,
+                clicks: 26780,
+                ctr: 2.15,
+                change: 8.9
+            },
+            {
+                name: 'MySQL性能优化',
+                days: 27,
+                clicks: 24560,
+                ctr: 1.97,
+                change: 12.3
+            },
+            {
+                name: 'Docker容器化技术',
+                days: 18,
+                clicks: 21890,
+                ctr: 1.76,
+                change: -6.2
+            },
+            {
+                name: 'React Native移动开发',
+                days: 20,
+                clicks: 19340,
+                ctr: 1.55,
+                change: 18.7
+            },
+            {
+                name: 'Kubernetes实战指南',
+                days: 15,
+                clicks: 17620,
+                ctr: 1.41,
+                change: 5.4
+            }
+        ];
+        
+        // 计算日均值
+        courseData.forEach(c => {
+            c.avgClicks = Math.round(c.clicks / c.days);
+            c.avgCtr = (c.ctr / c.days).toFixed(3);
+        });
+        
+        // 填充课程表格
+        function populateCourseTable() {
+            const tbody = document.getElementById('courseTableBody');
+            tbody.innerHTML = '';
+            
+            courseData.forEach((course, index) => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #ecf0f1';
+                row.innerHTML = `
+                    <td style="padding: 12px; font-size: 14px; color: #34495e; font-weight: 500;">${course.name}</td>
+                    <td style="padding: 12px; text-align: center; font-size: 14px; color: #7f8c8d;">${course.days}天</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50; font-weight: 500;">${course.clicks.toLocaleString()}</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">${course.ctr}%</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">${course.avgClicks.toLocaleString()}</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">${course.avgCtr}%</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: ${course.change > 0 ? '#27ae60' : '#e74c3c'}; font-weight: 500;">
+                        ${course.change > 0 ? '↑' : '↓'} ${Math.abs(course.change)}%
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        populateCourseTable();
+        
+        // 课程分布图
+        let courseDistChart = new Chart(document.getElementById('courseDistChart'), {
+            type: 'bar',
+            data: {
+                labels: courseData.map(c => c.name),
+                datasets: [{
+                    label: '点击量',
+                    data: courseData.map(c => c.clicks),
+                    backgroundColor: courseColors,
+                    borderColor: courseColors.map(c => c.replace('0.8', '1')),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '点击量'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateCourseChart() {
+            const metric = document.getElementById('courseMetricSelect').value;
+            const sort = document.getElementById('courseSortSelect').value;
+            
+            const metricLabels = {
+                clicks: '点击量',
+                ctr: '点击率(%)',
+                avgClicks: '日均点击量',
+                avgCtr: '日均点击率(%)'
+            };
+            
+            let sortedData = [...courseData].sort((a, b) => {
+                return sort === 'desc' ? b[metric] - a[metric] : a[metric] - b[metric];
+            });
+            
+            courseDistChart.data.labels = sortedData.map(c => c.name);
+            courseDistChart.data.datasets[0].label = metricLabels[metric];
+            courseDistChart.data.datasets[0].data = sortedData.map(c => c[metric]);
+            courseDistChart.options.scales.y.title.text = metricLabels[metric];
+            courseDistChart.update();
+        }
+        
+        // 生成每日课程数据
+        function generateCourseDailyData() {
+            const dailyData = {};
+            dates.forEach(date => {
+                dailyData[date] = {};
+                courseData.forEach(course => {
+                    const baseValue = course.clicks / 30;
+                    dailyData[date][course.name] = Math.floor(baseValue * (0.8 + Math.random() * 0.4));
+                });
+            });
+            return dailyData;
+        }
+        
+        const courseDailyData = generateCourseDailyData();
+        
+        // 课程堆积图
+        new Chart(document.getElementById('courseStackChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: courseData.map((course, index) => ({
+                    label: course.name,
+                    data: dates.map(date => {
+                        const total = Object.values(courseDailyData[date]).reduce((a, b) => a + b, 0);
+                        return ((courseDailyData[date][course.name] / total) * 100).toFixed(1);
+                    }),
+                    backgroundColor: courseColors[index],
+                    borderColor: courseColors[index].replace('0.8', '1'),
+                    borderWidth: 1
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '占比(%)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // ========== 模块5: 动手实验数据 ==========
+        
+        // 实验趋势数据
+        const labTrendData = {
+            clicks: generateData(1750, 400, 30),
+            rate: Array.from({length: 30}, () => (4.0 + Math.random() * 1.2).toFixed(2)),
+            compare: Array.from({length: 30}, () => (Math.random() * 30 - 8).toFixed(1))
+        };
+        
+        // 实验趋势图
+        let labTrendChart = new Chart(document.getElementById('labTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '查看全部点击量',
+                    data: labTrendData.clicks,
+                    backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }, {
+                    label: '同比变化(%)',
+                    data: labTrendData.compare,
+                    type: 'line',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    borderWidth: 2,
+                    yAxisID: 'y1',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '数值'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '变化率(%)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateLabTrendChart() {
+            const data = document.getElementById('labDataSelect').value;
+            const compare = document.getElementById('labCompareSelect').value;
+            
+            const dataLabels = {
+                clicks: '查看全部点击量',
+                rate: '查看全部转化率(%)'
+            };
+            
+            const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
+            
+            labTrendChart.data.datasets[0].label = dataLabels[data];
+            labTrendChart.data.datasets[0].data = labTrendData[data];
+            labTrendChart.data.datasets[1].label = compareLabel;
+            labTrendChart.data.datasets[1].data = labTrendData.compare;
+            labTrendChart.update();
+        }
+        
+        // 实验Tab数据
+        const labTabNames = ['云服务体验', '技术学习', '综合搭建'];
+        const labTabColors = [
+            'rgba(52, 152, 219, 0.8)',
+            'rgba(46, 204, 113, 0.8)',
+            'rgba(155, 89, 182, 0.8)'
+        ];
+        
+        const labTabClicks = [24500, 18300, 15200];
+        
+        // 实验Tab饼图
+        new Chart(document.getElementById('labTabPieChart'), {
+            type: 'pie',
+            data: {
+                labels: labTabNames,
+                datasets: [{
+                    data: labTabClicks,
+                    backgroundColor: labTabColors,
+                    borderColor: labTabColors.map(c => c.replace('0.8', '1')),
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return context.label + ': ' + context.parsed.toLocaleString() + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 生成实验Tab每日数据
+        function generateLabTabDailyData() {
+            const dailyData = {};
+            dates.forEach(date => {
+                dailyData[date] = {};
+                labTabNames.forEach((tab, index) => {
+                    const baseValue = labTabClicks[index] / 30;
+                    dailyData[date][tab] = Math.floor(baseValue * (0.8 + Math.random() * 0.4));
+                });
+            });
+            return dailyData;
+        }
+        
+        const labTabDailyData = generateLabTabDailyData();
+        
+        // 实验Tab趋势堆积图
+        new Chart(document.getElementById('labTabTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: labTabNames.map((tab, index) => ({
+                    label: tab,
+                    data: dates.map(date => {
+                        const total = Object.values(labTabDailyData[date]).reduce((a, b) => a + b, 0);
+                        return ((labTabDailyData[date][tab] / total) * 100).toFixed(1);
+                    }),
+                    backgroundColor: labTabColors[index],
+                    borderColor: labTabColors[index].replace('0.8', '1'),
+                    borderWidth: 1
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '占比(%)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 推荐实验数据
+        const labColors = [
+            'rgba(231, 76, 60, 0.8)',
+            'rgba(52, 152, 219, 0.8)',
+            'rgba(46, 204, 113, 0.8)',
+            'rgba(155, 89, 182, 0.8)',
+            'rgba(241, 196, 15, 0.8)',
+            'rgba(230, 126, 34, 0.8)'
+        ];
+        
+        const labData = [
+            {
+                name: '搭建个人博客网站',
+                days: 30,
+                clicks: 18560,
+                ctr: 1.49,
+                change: 18.6
+            },
+            {
+                name: '云数据库部署实战',
+                days: 28,
+                clicks: 16240,
+                ctr: 1.30,
+                change: 12.3
+            },
+            {
+                name: 'AI图像识别应用',
+                days: 25,
+                clicks: 14780,
+                ctr: 1.19,
+                change: -4.2
+            },
+            {
+                name: '微服务架构搭建',
+                days: 22,
+                clicks: 13450,
+                ctr: 1.08,
+                change: 22.7
+            },
+            {
+                name: '容器化部署实践',
+                days: 27,
+                clicks: 12890,
+                ctr: 1.03,
+                change: 8.9
+            },
+            {
+                name: '大数据分析平台',
+                days: 20,
+                clicks: 11320,
+                ctr: 0.91,
+                change: -6.5
+            }
+        ];
+        
+        // 计算日均值
+        labData.forEach(l => {
+            l.avgClicks = Math.round(l.clicks / l.days);
+            l.avgCtr = (l.ctr / l.days).toFixed(3);
+        });
+        
+        // 填充实验表格
+        function populateLabTable() {
+            const tbody = document.getElementById('labTableBody');
+            tbody.innerHTML = '';
+            
+            labData.forEach((lab, index) => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #ecf0f1';
+                row.innerHTML = `
+                    <td style="padding: 12px; font-size: 14px; color: #34495e; font-weight: 500;">${lab.name}</td>
+                    <td style="padding: 12px; text-align: center; font-size: 14px; color: #7f8c8d;">${lab.days}天</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50; font-weight: 500;">${lab.clicks.toLocaleString()}</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">${lab.ctr}%</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">${lab.avgClicks.toLocaleString()}</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #2c3e50;">${lab.avgCtr}%</td>
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: ${lab.change > 0 ? '#27ae60' : '#e74c3c'}; font-weight: 500;">
+                        ${lab.change > 0 ? '↑' : '↓'} ${Math.abs(lab.change)}%
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        populateLabTable();
+        
+        // 实验分布图
+        let labDistChart = new Chart(document.getElementById('labDistChart'), {
+            type: 'bar',
+            data: {
+                labels: labData.map(l => l.name),
+                datasets: [{
+                    label: '点击量',
+                    data: labData.map(l => l.clicks),
+                    backgroundColor: labColors,
+                    borderColor: labColors.map(c => c.replace('0.8', '1')),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '点击量'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateLabChart() {
+            const metric = document.getElementById('labMetricSelect').value;
+            const sort = document.getElementById('labSortSelect').value;
+            
+            const metricLabels = {
+                clicks: '点击量',
+                ctr: '点击率(%)',
+                avgClicks: '日均点击量',
+                avgCtr: '日均点击率(%)'
+            };
+            
+            let sortedData = [...labData].sort((a, b) => {
+                return sort === 'desc' ? b[metric] - a[metric] : a[metric] - b[metric];
+            });
+            
+            labDistChart.data.labels = sortedData.map(l => l.name);
+            labDistChart.data.datasets[0].label = metricLabels[metric];
+            labDistChart.data.datasets[0].data = sortedData.map(l => l[metric]);
+            labDistChart.options.scales.y.title.text = metricLabels[metric];
+            labDistChart.update();
+        }
+        
+        // 生成每日实验数据
+        function generateLabDailyData() {
+            const dailyData = {};
+            dates.forEach(date => {
+                dailyData[date] = {};
+                labData.forEach(lab => {
+                    const baseValue = lab.clicks / 30;
+                    dailyData[date][lab.name] = Math.floor(baseValue * (0.8 + Math.random() * 0.4));
+                });
+            });
+            return dailyData;
+        }
+        
+        const labDailyData = generateLabDailyData();
+        
+        // 实验堆积图
+        new Chart(document.getElementById('labStackChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: labData.map((lab, index) => ({
+                    label: lab.name,
+                    data: dates.map(date => {
+                        const total = Object.values(labDailyData[date]).reduce((a, b) => a + b, 0);
+                        return ((labDailyData[date][lab.name] / total) * 100).toFixed(1);
+                    }),
+                    backgroundColor: labColors[index],
+                    borderColor: labColors[index].replace('0.8', '1'),
+                    borderWidth: 1
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '占比(%)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // ========== 模块6: 认证考试数据 ==========
+        
+        // 认证趋势数据
+        const certTrendData = {
+            card: {
+                clicks: generateData(3200, 650, 30),
+                rate: Array.from({length: 30}, () => (2.5 + Math.random() * 0.8).toFixed(2)),
+                compare: Array.from({length: 30}, () => (Math.random() * 28 - 6).toFixed(1))
+            },
+            overview: {
+                clicks: generateData(2100, 450, 30),
+                rate: Array.from({length: 30}, () => (1.6 + Math.random() * 0.6).toFixed(2)),
+                compare: Array.from({length: 30}, () => (Math.random() * 25 - 4).toFixed(1))
+            }
+        };
+        
+        // 认证趋势图
+        let certTrendChart = new Chart(document.getElementById('certTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '认证卡片点击量',
+                    data: certTrendData.card.clicks,
+                    backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }, {
+                    label: '同比变化(%)',
+                    data: certTrendData.card.compare,
+                    type: 'line',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    borderWidth: 2,
+                    yAxisID: 'y1',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '数值'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '变化率(%)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateCertTrendChart() {
+            const type = document.getElementById('certTypeSelect').value;
+            const data = document.getElementById('certDataSelect').value;
+            const compare = document.getElementById('certCompareSelect').value;
+            
+            const typeLabels = {
+                card: '认证卡片点击',
+                overview: '认证总览转化'
+            };
+            
+            const dataLabels = {
+                clicks: '量',
+                rate: '率(%)'
+            };
+            
+            const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
+            
+            certTrendChart.data.datasets[0].label = typeLabels[type] + dataLabels[data];
+            certTrendChart.data.datasets[0].data = data === 'clicks' ? 
+                certTrendData[type].clicks : certTrendData[type].rate;
+            certTrendChart.data.datasets[1].label = compareLabel;
+            certTrendChart.data.datasets[1].data = certTrendData[type].compare;
+            certTrendChart.update();
+        }
+        
+        // 认证数据
+        const certNames = [
+            '云从业者认证',
+            '人工智能工程师认证',
+            '云架构师认证',
+            '大数据工程师认证',
+            '云安全工程师认证',
+            '云开发工程师认证'
+        ];
+        
+        const certColors = [
+            'rgba(52, 152, 219, 0.8)',
+            'rgba(46, 204, 113, 0.8)',
+            'rgba(155, 89, 182, 0.8)',
+            'rgba(231, 76, 60, 0.8)',
+            'rgba(241, 196, 15, 0.8)',
+            'rgba(230, 126, 34, 0.8)'
+        ];
+        
+        const certClicks = [28500, 24300, 19800, 17600, 15200, 13400];
+        
+        // 认证饼图
+        new Chart(document.getElementById('certPieChart'), {
+            type: 'pie',
+            data: {
+                labels: certNames,
+                datasets: [{
+                    data: certClicks,
+                    backgroundColor: certColors,
+                    borderColor: certColors.map(c => c.replace('0.8', '1')),
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return context.label + ': ' + context.parsed.toLocaleString() + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 生成认证每日数据
+        function generateCertDailyData() {
+            const dailyData = {};
+            dates.forEach(date => {
+                dailyData[date] = {};
+                certNames.forEach((cert, index) => {
+                    const baseValue = certClicks[index] / 30;
+                    dailyData[date][cert] = Math.floor(baseValue * (0.8 + Math.random() * 0.4));
+                });
+            });
+            return dailyData;
+        }
+        
+        const certDailyData = generateCertDailyData();
+        
+        // 认证堆积图
+        new Chart(document.getElementById('certStackChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: certNames.map((cert, index) => ({
+                    label: cert,
+                    data: dates.map(date => {
+                        const total = Object.values(certDailyData[date]).reduce((a, b) => a + b, 0);
+                        return ((certDailyData[date][cert] / total) * 100).toFixed(1);
+                    }),
+                    backgroundColor: certColors[index],
+                    borderColor: certColors[index].replace('0.8', '1'),
+                    borderWidth: 1
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '占比(%)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // ========== 模块7: 底部模块数据 ==========
+        
+        // 视频模块趋势数据
+        const videoTrendData = {
+            playRate: {
+                data: Array.from({length: 30}, () => (7.5 + Math.random() * 2).toFixed(2)),
+                compare: Array.from({length: 30}, () => (Math.random() * 25 - 5).toFixed(1))
+            },
+            avgDuration: {
+                data: Array.from({length: 30}, () => Math.floor(110 + Math.random() * 30)),
+                compare: Array.from({length: 30}, () => (Math.random() * 20 - 4).toFixed(1))
+            },
+            avgProgress: {
+                data: Array.from({length: 30}, () => (60 + Math.random() * 12).toFixed(1)),
+                compare: Array.from({length: 30}, () => (Math.random() * 18 - 3).toFixed(1))
+            },
+            completeRate: {
+                data: Array.from({length: 30}, () => (38 + Math.random() * 10).toFixed(1)),
+                compare: Array.from({length: 30}, () => (Math.random() * 22 - 6).toFixed(1))
+            }
+        };
+        
+        // 视频趋势图
+        let videoTrendChart = new Chart(document.getElementById('videoTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '视频播放率(%)',
+                    data: videoTrendData.playRate.data,
+                    backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }, {
+                    label: '同比变化(%)',
+                    data: videoTrendData.playRate.compare,
+                    type: 'line',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    borderWidth: 2,
+                    yAxisID: 'y1',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '数值'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '变化率(%)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateVideoTrendChart() {
+            const metric = document.getElementById('videoMetricSelect').value;
+            const compare = document.getElementById('videoCompareSelect').value;
+            
+            const metricLabels = {
+                playRate: '视频播放率(%)',
+                avgDuration: '平均观看时长(秒)',
+                avgProgress: '平均播放进度(%)',
+                completeRate: '视频完播率(%)'
+            };
+            
+            const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
+            
+            videoTrendChart.data.datasets[0].label = metricLabels[metric];
+            videoTrendChart.data.datasets[0].data = videoTrendData[metric].data;
+            videoTrendChart.data.datasets[1].label = compareLabel;
+            videoTrendChart.data.datasets[1].data = videoTrendData[metric].compare;
+            videoTrendChart.update();
+        }
+        
+        // 海报模块趋势数据
+        const posterTrendData = {
+            clicks: {
+                data: generateData(1280, 280, 30),
+                compare: Array.from({length: 30}, () => (Math.random() * 28 - 6).toFixed(1))
+            },
+            rate: {
+                data: Array.from({length: 30}, () => (2.8 + Math.random() * 0.8).toFixed(2)),
+                compare: Array.from({length: 30}, () => (Math.random() * 20 - 4).toFixed(1))
+            }
+        };
+        
+        // 海报趋势图
+        let posterTrendChart = new Chart(document.getElementById('posterTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '点击量',
+                    data: posterTrendData.clicks.data,
+                    backgroundColor: 'rgba(155, 89, 182, 0.6)',
+                    borderColor: 'rgba(155, 89, 182, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }, {
+                    label: '同比变化(%)',
+                    data: posterTrendData.clicks.compare,
+                    type: 'line',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    borderWidth: 2,
+                    yAxisID: 'y1',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '数值'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '变化率(%)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updatePosterTrendChart() {
+            const data = document.getElementById('posterDataSelect').value;
+            const compare = document.getElementById('posterCompareSelect').value;
+            
+            const dataLabels = {
+                clicks: '点击量',
+                rate: '点击率(%)'
+            };
+            
+            const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
+            
+            posterTrendChart.data.datasets[0].label = dataLabels[data];
+            posterTrendChart.data.datasets[0].data = posterTrendData[data].data;
+            posterTrendChart.data.datasets[1].label = compareLabel;
+            posterTrendChart.data.datasets[1].data = posterTrendData[data].compare;
+            posterTrendChart.update();
+        }
+    </script>
+    
+    <script>
+        // ========== 模块8: 全局导航栏数据 ==========
+        
+        // 导航趋势数据
+        const navTrendData = {
+            course: {
+                clicks: generateData(5200, 950, 30),
+                rate: Array.from({length: 30}, () => (4.0 + Math.random() * 1.2).toFixed(2)),
+                compare: Array.from({length: 30}, () => (Math.random() * 26 - 5).toFixed(1))
+            },
+            lab: {
+                clicks: generateData(3800, 720, 30),
+                rate: Array.from({length: 30}, () => (3.0 + Math.random() * 0.9).toFixed(2)),
+                compare: Array.from({length: 30}, () => (Math.random() * 24 - 4).toFixed(1))
+            },
+            cert: {
+                clicks: generateData(2900, 550, 30),
+                rate: Array.from({length: 30}, () => (2.3 + Math.random() * 0.7).toFixed(2)),
+                compare: Array.from({length: 30}, () => (Math.random() * 28 - 6).toFixed(1))
+            },
+            training: {
+                clicks: generateData(1650, 380, 30),
+                rate: Array.from({length: 30}, () => (1.3 + Math.random() * 0.5).toFixed(2)),
+                compare: Array.from({length: 30}, () => (Math.random() * 30 - 8).toFixed(1))
+            }
+        };
+        
+        // 导航趋势图
+        let navTrendChart = new Chart(document.getElementById('navTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: '在线课程导航点击量',
+                    data: navTrendData.course.clicks,
+                    backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }, {
+                    label: '同比变化(%)',
+                    data: navTrendData.course.compare,
+                    type: 'line',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    borderWidth: 2,
+                    yAxisID: 'y1',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '数值'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '变化率(%)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateNavTrendChart() {
+            const type = document.getElementById('navTypeSelect').value;
+            const data = document.getElementById('navDataSelect').value;
+            const compare = document.getElementById('navCompareSelect').value;
+            
+            const typeLabels = {
+                course: '在线课程导航',
+                lab: '动手实操导航',
+                cert: '认证考试导航',
+                training: '企业培训导航'
+            };
+            
+            const dataLabels = {
+                clicks: '点击量',
+                rate: '点击率(%)'
+            };
+            
+            const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
+            
+            navTrendChart.data.datasets[0].label = typeLabels[type] + dataLabels[data];
+            navTrendChart.data.datasets[0].data = data === 'clicks' ? 
+                navTrendData[type].clicks : navTrendData[type].rate;
+            navTrendChart.data.datasets[1].label = compareLabel;
+            navTrendChart.data.datasets[1].data = navTrendData[type].compare;
+            navTrendChart.update();
+        }
+        
+        // 导航数据
+        const navNames = [
+            '在线课程',
+            '动手实操',
+            '认证考试',
+            '企业培训'
+        ];
+        
+        const navColors = [
+            'rgba(52, 152, 219, 0.8)',
+            'rgba(46, 204, 113, 0.8)',
+            'rgba(155, 89, 182, 0.8)',
+            'rgba(241, 196, 15, 0.8)'
+        ];
+        
+        // 计算30天总点击量
+        const navClicks = [
+            navTrendData.course.clicks.reduce((a, b) => a + b, 0),
+            navTrendData.lab.clicks.reduce((a, b) => a + b, 0),
+            navTrendData.cert.clicks.reduce((a, b) => a + b, 0),
+            navTrendData.training.clicks.reduce((a, b) => a + b, 0)
+        ];
+        
+        // 导航饼图
+        new Chart(document.getElementById('navPieChart'), {
+            type: 'pie',
+            data: {
+                labels: navNames,
+                datasets: [{
+                    data: navClicks,
+                    backgroundColor: navColors,
+                    borderColor: navColors.map(c => c.replace('0.8', '1')),
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return context.label + ': ' + context.parsed.toLocaleString() + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 导航堆积图
+        new Chart(document.getElementById('navStackChart'), {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [
+                    {
+                        label: '在线课程',
+                        data: dates.map((date, index) => {
+                            const total = navTrendData.course.clicks[index] + 
+                                        navTrendData.lab.clicks[index] + 
+                                        navTrendData.cert.clicks[index] + 
+                                        navTrendData.training.clicks[index];
+                            return ((navTrendData.course.clicks[index] / total) * 100).toFixed(1);
+                        }),
+                        backgroundColor: navColors[0],
+                        borderColor: navColors[0].replace('0.8', '1'),
+                        borderWidth: 1
+                    },
+                    {
+                        label: '动手实操',
+                        data: dates.map((date, index) => {
+                            const total = navTrendData.course.clicks[index] + 
+                                        navTrendData.lab.clicks[index] + 
+                                        navTrendData.cert.clicks[index] + 
+                                        navTrendData.training.clicks[index];
+                            return ((navTrendData.lab.clicks[index] / total) * 100).toFixed(1);
+                        }),
+                        backgroundColor: navColors[1],
+                        borderColor: navColors[1].replace('0.8', '1'),
+                        borderWidth: 1
+                    },
+                    {
+                        label: '认证考试',
+                        data: dates.map((date, index) => {
+                            const total = navTrendData.course.clicks[index] + 
+                                        navTrendData.lab.clicks[index] + 
+                                        navTrendData.cert.clicks[index] + 
+                                        navTrendData.training.clicks[index];
+                            return ((navTrendData.cert.clicks[index] / total) * 100).toFixed(1);
+                        }),
+                        backgroundColor: navColors[2],
+                        borderColor: navColors[2].replace('0.8', '1'),
+                        borderWidth: 1
+                    },
+                    {
+                        label: '企业培训',
+                        data: dates.map((date, index) => {
+                            const total = navTrendData.course.clicks[index] + 
+                                        navTrendData.lab.clicks[index] + 
+                                        navTrendData.cert.clicks[index] + 
+                                        navTrendData.training.clicks[index];
+                            return ((navTrendData.training.clicks[index] / total) * 100).toFixed(1);
+                        }),
+                        backgroundColor: navColors[3],
+                        borderColor: navColors[3].replace('0.8', '1'),
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '占比(%)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+    </script>
+</body>
+</html>
