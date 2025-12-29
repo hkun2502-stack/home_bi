@@ -115,7 +115,8 @@
             font-size: 14px;
             color: #7f8c8d;
         }
-        .filter-group select {
+        .filter-group select,
+        .filter-group input[type="date"] {
             padding: 6px 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -158,11 +159,19 @@
     
     <!-- 模块1: 首页核心指标 -->
     <div class="section-title">首页核心指标</div>
+    <div style="display:flex; justify-content:flex-end; padding:10px 0;">
+        <div class="filter-group">
+            <label>日期：</label>
+            <input type="date" id="coreStartDate" onchange="updateCoreMetrics()" />
+            <span>—</span>
+            <input type="date" id="coreEndDate" onchange="updateCoreMetrics()" />
+        </div>
+    </div>
     <div class="card-container">
         <div class="metric-card">
             <div class="metric-title">首页访问总量（PV）</div>
             <div class="metric-subtitle">home_page_view 事件累计总数</div>
-            <div class="metric-value">42,356</div>
+            <div class="metric-value" id="corePV">42,356</div>
             <div class="metric-comparison">
                 <div class="comparison-item positive">
                     <span>↑</span>
@@ -178,7 +187,7 @@
         <div class="metric-card">
             <div class="metric-title">用户数（UV）</div>
             <div class="metric-subtitle">访问首页的不重复用户数</div>
-            <div class="metric-value">28,543</div>
+            <div class="metric-value" id="coreUV">28,543</div>
             <div class="metric-comparison">
                 <div class="comparison-item positive">
                     <span>↑</span>
@@ -194,7 +203,7 @@
         <div class="metric-card">
             <div class="metric-title">人均访问首页数</div>
             <div class="metric-subtitle">首页访问总量 / 用户数</div>
-            <div class="metric-value">1.48</div>
+            <div class="metric-value" id="coreAvg">1.48</div>
             <div class="metric-comparison">
                 <div class="comparison-item positive">
                     <span>↑</span>
@@ -210,7 +219,7 @@
         <div class="metric-card">
             <div class="metric-title">首页跳出率</div>
             <div class="metric-subtitle">只访问首页的用户数 / 总UV</div>
-            <div class="metric-value">32.5%</div>
+            <div class="metric-value" id="coreBounce">32.5%</div>
             <div class="metric-comparison">
                 <div class="comparison-item negative">
                     <span>↑</span>
@@ -247,6 +256,10 @@
                     <option value="yoy">同比</option>
                     <option value="mom">环比</option>
                 </select>
+                <label>日期：</label>
+                <input type="date" id="trendStartDate" onchange="updateTrendChart()" />
+                <span>—</span>
+                <input type="date" id="trendEndDate" onchange="updateTrendChart()" />
             </div>
         </div>
         <canvas id="trendChart"></canvas>
@@ -416,11 +429,10 @@
                     <option value="avgClicks">日均点击量</option>
                     <option value="avgCtr">日均点击率(%)</option>
                 </select>
-                <label>排序：</label>
-                <select id="bannerSortSelect" onchange="updateBannerChart()">
-                    <option value="desc">降序</option>
-                    <option value="asc">升序</option>
-                </select>
+                <label>日期：</label>
+                <input type="date" id="bannerStartDate" onchange="updateBannerChart()" />
+                <span>—</span>
+                <input type="date" id="bannerEndDate" onchange="updateBannerChart()" />
             </div>
         </div>
         <canvas id="bannerChart"></canvas>
@@ -511,6 +523,10 @@
                     <option value="yoy">同比</option>
                     <option value="mom">环比</option>
                 </select>
+                <label>日期：</label>
+                <input type="date" id="courseStartDate" onchange="updateCourseTrendChart()" />
+                <span>—</span>
+                <input type="date" id="courseEndDate" onchange="updateCourseTrendChart()" />
             </div>
         </div>
         <div class="chart-wrapper">
@@ -673,6 +689,10 @@
                     <option value="desc">降序</option>
                     <option value="asc">升序</option>
                 </select>
+                <label>日期：</label>
+                <input type="date" id="courseChartStartDate" onchange="updateCourseChart()" />
+                <span>—</span>
+                <input type="date" id="courseChartEndDate" onchange="updateCourseChart()" />
             </div>
         </div>
         <div class="chart-wrapper">
@@ -736,6 +756,10 @@
                         <option value="yoy">同比</option>
                         <option value="mom">环比</option>
                     </select>
+                    <label>日期：</label>
+                    <input type="date" id="labStartDate" onchange="updateLabTrendChart()" />
+                    <span>—</span>
+                    <input type="date" id="labEndDate" onchange="updateLabTrendChart()" />
                 </div>
             </div>
             <div class="chart-wrapper">
@@ -879,6 +903,10 @@
                     <option value="desc">降序</option>
                     <option value="asc">升序</option>
                 </select>
+                <label>日期：</label>
+                <input type="date" id="labChartStartDate" onchange="updateLabChart()" />
+                <span>—</span>
+                <input type="date" id="labChartEndDate" onchange="updateLabChart()" />
             </div>
         </div>
         <div class="chart-wrapper">
@@ -912,6 +940,10 @@
                     <option value="yoy">同比</option>
                     <option value="mom">环比</option>
                 </select>
+                <label>日期：</label>
+                <input type="date" id="certStartDate" onchange="updateCertTrendChart()" />
+                <span>—</span>
+                <input type="date" id="certEndDate" onchange="updateCertTrendChart()" />
             </div>
         </div>
         <div class="chart-wrapper">
@@ -967,6 +999,10 @@
                     <option value="yoy">同比</option>
                     <option value="mom">环比</option>
                 </select>
+                <label>日期：</label>
+                <input type="date" id="bottomStartDate" onchange="updateBottomTrendChart()" />
+                <span>—</span>
+                <input type="date" id="bottomEndDate" onchange="updateBottomTrendChart()" />
             </div>
         </div>
         <div class="chart-wrapper">
@@ -1002,6 +1038,10 @@
                     <option value="yoy">同比</option>
                     <option value="mom">环比</option>
                 </select>
+                <label>日期：</label>
+                <input type="date" id="navStartDate" onchange="updateNavTrendChart()" />
+                <span>—</span>
+                <input type="date" id="navEndDate" onchange="updateNavTrendChart()" />
             </div>
         </div>
         <div class="chart-wrapper">
@@ -1057,9 +1097,48 @@
         }
         
         const dates = generateDates(30);
+        const dateObjs = generateDateObjects(30);
+
+        function generateDateObjects(days) {
+            const arr = [];
+            const today = new Date();
+            for (let i = days - 1; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                d.setHours(0,0,0,0);
+                arr.push(d);
+            }
+            return arr;
+        }
+
+        function formatISO(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function getRangeIndices(startISO, endISO) {
+            const start = startISO ? new Date(startISO) : null;
+            const end = endISO ? new Date(endISO) : null;
+            let startIdx = 0;
+            let endIdx = dateObjs.length - 1;
+            if (start) {
+                for (let i = 0; i < dateObjs.length; i++) {
+                    if (dateObjs[i] >= start) { startIdx = i; break; }
+                }
+            }
+            if (end) {
+                for (let i = dateObjs.length - 1; i >= 0; i--) {
+                    if (dateObjs[i] <= end) { endIdx = i; break; }
+                }
+            }
+            if (startIdx > endIdx) { startIdx = 0; endIdx = dateObjs.length - 1; }
+            return { startIdx, endIdx };
+        }
         
         // 流量趋势数据
-        const trendData = {
+        const trendData = { 
             pv: {
                 current: generateData(42000, 8000, 30),
                 compare: Array.from({length: 30}, () => (Math.random() * 30 - 5).toFixed(1))
@@ -1136,18 +1215,22 @@
             const metric = document.getElementById('trendMetricSelect').value;
             const compare = document.getElementById('trendCompareSelect').value;
             const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
-            
+            const start = document.getElementById('trendStartDate')?.value;
+            const end = document.getElementById('trendEndDate')?.value;
+            const { startIdx, endIdx } = getRangeIndices(start, end);
+
             const labels = {
                 pv: '首页访问总量（PV）',
                 uv: '用户数（UV）',
                 avg: '人均访问首页数',
                 bounce: '首页跳出率(%)'
             };
-            
+
+            trendChart.data.labels = dates.slice(startIdx, endIdx + 1);
             trendChart.data.datasets[0].label = labels[metric];
-            trendChart.data.datasets[0].data = trendData[metric].current;
+            trendChart.data.datasets[0].data = trendData[metric].current.slice(startIdx, endIdx + 1);
             trendChart.data.datasets[1].label = compareLabel;
-            trendChart.data.datasets[1].data = trendData[metric].compare;
+            trendChart.data.datasets[1].data = trendData[metric].compare.slice(startIdx, endIdx + 1);
             trendChart.update();
         }
         
@@ -1219,7 +1302,9 @@
         
         function updateBannerChart() {
             const metric = document.getElementById('bannerMetricSelect').value;
-            const sort = document.getElementById('bannerSortSelect').value;
+            const start = document.getElementById('bannerStartDate')?.value;
+            const end = document.getElementById('bannerEndDate')?.value;
+            const { startIdx, endIdx } = getRangeIndices(start, end);
             
             const metricLabels = {
                 clicks: '点击量',
@@ -1228,16 +1313,10 @@
                 avgCtr: '日均点击率(%)'
             };
             
-            // 计算每个Banner的平均值用于排序
-            const sortedBanners = [...bannerData].sort((a, b) => {
-                const avgA = a[metric].reduce((sum, val) => sum + parseFloat(val), 0) / a[metric].length;
-                const avgB = b[metric].reduce((sum, val) => sum + parseFloat(val), 0) / b[metric].length;
-                return sort === 'desc' ? avgB - avgA : avgA - avgB;
-            });
-            
-            bannerChart.data.datasets = sortedBanners.map(banner => ({
+            bannerChart.data.labels = dates.slice(startIdx, endIdx + 1);
+            bannerChart.data.datasets = bannerData.map(banner => ({
                 label: banner.name,
-                data: banner[metric],
+                data: banner[metric].slice(startIdx, endIdx + 1),
                 borderColor: banner.color,
                 backgroundColor: banner.color.replace('1)', '0.1)'),
                 borderWidth: 2,
@@ -1324,24 +1403,27 @@
             const type = document.getElementById('courseTypeSelect').value;
             const data = document.getElementById('courseDataSelect').value;
             const compare = document.getElementById('courseCompareSelect').value;
-            
+            const start = document.getElementById('courseStartDate')?.value;
+            const end = document.getElementById('courseEndDate')?.value;
+            const { startIdx, endIdx } = getRangeIndices(start, end);
+
             const typeLabels = {
                 viewAll: '查看全部',
                 operation: '运营位课程'
             };
-            
+
             const dataLabels = {
                 clicks: '点击量',
                 rate: '点击率(%)'
             };
-            
+
             const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
-            
+
+            courseTrendChart.data.labels = dates.slice(startIdx, endIdx + 1);
             courseTrendChart.data.datasets[0].label = typeLabels[type] + dataLabels[data];
-            courseTrendChart.data.datasets[0].data = data === 'clicks' ? 
-                courseTrendData[type].clicks : courseTrendData[type].rate;
+            courseTrendChart.data.datasets[0].data = (data === 'clicks' ? courseTrendData[type].clicks : courseTrendData[type].rate).slice(startIdx, endIdx + 1);
             courseTrendChart.data.datasets[1].label = compareLabel;
-            courseTrendChart.data.datasets[1].data = courseTrendData[type].compare;
+            courseTrendChart.data.datasets[1].data = courseTrendData[type].compare.slice(startIdx, endIdx + 1);
             courseTrendChart.update();
         }
         
@@ -1509,23 +1591,29 @@
         function updateCourseChart() {
             const metric = document.getElementById('courseMetricSelect').value;
             const sort = document.getElementById('courseSortSelect').value;
-            
+            const start = document.getElementById('courseChartStartDate')?.value;
+            const end = document.getElementById('courseChartEndDate')?.value;
+            const { startIdx, endIdx } = getRangeIndices(start, end);
+
             const metricLabels = {
                 clicks: '点击量',
                 ctr: '点击率(%)',
                 avgClicks: '日均点击量',
                 avgCtr: '日均点击率(%)'
             };
-            
+
             const sortedCourses = [...courseData].sort((a, b) => {
-                const avgA = a[metric].reduce((sum, val) => sum + parseFloat(val), 0) / a[metric].length;
-                const avgB = b[metric].reduce((sum, val) => sum + parseFloat(val), 0) / b[metric].length;
+                const sliceA = a[metric].slice(startIdx, endIdx + 1).map(v => parseFloat(v));
+                const sliceB = b[metric].slice(startIdx, endIdx + 1).map(v => parseFloat(v));
+                const avgA = sliceA.reduce((s, v) => s + v, 0) / sliceA.length;
+                const avgB = sliceB.reduce((s, v) => s + v, 0) / sliceB.length;
                 return sort === 'desc' ? avgB - avgA : avgA - avgB;
             });
-            
+
+            courseChart.data.labels = dates.slice(startIdx, endIdx + 1);
             courseChart.data.datasets = sortedCourses.map(course => ({
                 label: course.name,
-                data: course[metric],
+                data: course[metric].slice(startIdx, endIdx + 1),
                 borderColor: course.color,
                 backgroundColor: course.color.replace('1)', '0.1)'),
                 borderWidth: 2,
@@ -1533,7 +1621,7 @@
                 pointRadius: 3,
                 pointHoverRadius: 5
             }));
-            
+
             courseChart.options.scales.y.title.text = metricLabels[metric];
             courseChart.update();
         }
@@ -1603,18 +1691,22 @@
         function updateLabTrendChart() {
             const data = document.getElementById('labDataSelect').value;
             const compare = document.getElementById('labCompareSelect').value;
-            
+            const start = document.getElementById('labStartDate')?.value;
+            const end = document.getElementById('labEndDate')?.value;
+            const { startIdx, endIdx } = getRangeIndices(start, end);
+
             const dataLabels = {
                 clicks: '查看全部点击量',
                 rate: '查看全部转化率(%)'
             };
-            
+
             const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
-            
+
+            labTrendChart.data.labels = dates.slice(startIdx, endIdx + 1);
             labTrendChart.data.datasets[0].label = dataLabels[data];
-            labTrendChart.data.datasets[0].data = labTrendData[data];
+            labTrendChart.data.datasets[0].data = labTrendData[data].slice(startIdx, endIdx + 1);
             labTrendChart.data.datasets[1].label = compareLabel;
-            labTrendChart.data.datasets[1].data = labTrendData.compare;
+            labTrendChart.data.datasets[1].data = labTrendData.compare.slice(startIdx, endIdx + 1);
             labTrendChart.update();
         }
         
@@ -1763,23 +1855,29 @@
         function updateLabChart() {
             const metric = document.getElementById('labMetricSelect').value;
             const sort = document.getElementById('labSortSelect').value;
-            
+            const start = document.getElementById('labChartStartDate')?.value;
+            const end = document.getElementById('labChartEndDate')?.value;
+            const { startIdx, endIdx } = getRangeIndices(start, end);
+
             const metricLabels = {
                 clicks: '点击量',
                 ctr: '点击率(%)',
                 avgClicks: '日均点击量',
                 avgCtr: '日均点击率(%)'
             };
-            
+
             const sortedLabs = [...labData].sort((a, b) => {
-                const avgA = a[metric].reduce((sum, val) => sum + parseFloat(val), 0) / a[metric].length;
-                const avgB = b[metric].reduce((sum, val) => sum + parseFloat(val), 0) / b[metric].length;
+                const sliceA = a[metric].slice(startIdx, endIdx + 1).map(v => parseFloat(v));
+                const sliceB = b[metric].slice(startIdx, endIdx + 1).map(v => parseFloat(v));
+                const avgA = sliceA.reduce((s, v) => s + v, 0) / sliceA.length;
+                const avgB = sliceB.reduce((s, v) => s + v, 0) / sliceB.length;
                 return sort === 'desc' ? avgB - avgA : avgA - avgB;
             });
-            
+
+            labChart.data.labels = dates.slice(startIdx, endIdx + 1);
             labChart.data.datasets = sortedLabs.map(lab => ({
                 label: lab.name,
-                data: lab[metric],
+                data: lab[metric].slice(startIdx, endIdx + 1),
                 borderColor: lab.color,
                 backgroundColor: lab.color.replace('1)', '0.1)'),
                 borderWidth: 2,
@@ -1787,7 +1885,7 @@
                 pointRadius: 3,
                 pointHoverRadius: 5
             }));
-            
+
             labChart.options.scales.y.title.text = metricLabels[metric];
             labChart.update();
         }
@@ -1865,24 +1963,27 @@
             const type = document.getElementById('certTypeSelect').value;
             const data = document.getElementById('certDataSelect').value;
             const compare = document.getElementById('certCompareSelect').value;
-            
+            const start = document.getElementById('certStartDate')?.value;
+            const end = document.getElementById('certEndDate')?.value;
+            const { startIdx, endIdx } = getRangeIndices(start, end);
+
             const typeLabels = {
                 card: '认证卡片点击',
                 overview: '查看全部'
             };
-            
+
             const dataLabels = {
                 clicks: '量',
                 rate: '率(%)'
             };
-            
+
             const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
-            
+
+            certTrendChart.data.labels = dates.slice(startIdx, endIdx + 1);
             certTrendChart.data.datasets[0].label = typeLabels[type] + dataLabels[data];
-            certTrendChart.data.datasets[0].data = data === 'clicks' ? 
-                certTrendData[type].clicks : certTrendData[type].rate;
+            certTrendChart.data.datasets[0].data = (data === 'clicks' ? certTrendData[type].clicks : certTrendData[type].rate).slice(startIdx, endIdx + 1);
             certTrendChart.data.datasets[1].label = compareLabel;
-            certTrendChart.data.datasets[1].data = certTrendData[type].compare;
+            certTrendChart.data.datasets[1].data = certTrendData[type].compare.slice(startIdx, endIdx + 1);
             certTrendChart.update();
         }
         
@@ -2042,18 +2143,22 @@
         function updateBottomTrendChart() {
             const type = document.getElementById('bottomTypeSelect').value;
             const compare = document.getElementById('bottomCompareSelect').value;
-            
+            const start = document.getElementById('bottomStartDate')?.value;
+            const end = document.getElementById('bottomEndDate')?.value;
+            const { startIdx, endIdx } = getRangeIndices(start, end);
+
             const typeLabels = {
                 video: '视频点击率(%)',
                 poster: '海报点击率(%)'
             };
-            
+
             const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
-            
+
+            bottomTrendChart.data.labels = dates.slice(startIdx, endIdx + 1);
             bottomTrendChart.data.datasets[0].label = typeLabels[type];
-            bottomTrendChart.data.datasets[0].data = bottomTrendData[type].rate;
+            bottomTrendChart.data.datasets[0].data = bottomTrendData[type].rate.slice(startIdx, endIdx + 1);
             bottomTrendChart.data.datasets[1].label = compareLabel;
-            bottomTrendChart.data.datasets[1].data = bottomTrendData[type].compare;
+            bottomTrendChart.data.datasets[1].data = bottomTrendData[type].compare.slice(startIdx, endIdx + 1);
             bottomTrendChart.update();
         }
         
@@ -2139,26 +2244,29 @@
             const type = document.getElementById('navTypeSelect').value;
             const data = document.getElementById('navDataSelect').value;
             const compare = document.getElementById('navCompareSelect').value;
-            
+            const start = document.getElementById('navStartDate')?.value;
+            const end = document.getElementById('navEndDate')?.value;
+            const { startIdx, endIdx } = getRangeIndices(start, end);
+
             const typeLabels = {
                 course: '在线课程导航',
                 lab: '动手实验导航',
                 cert: '认证考试导航',
                 training: '企业培训导航'
             };
-            
+
             const dataLabels = {
                 clicks: '点击量',
                 rate: '点击率(%)'
             };
-            
+
             const compareLabel = compare === 'yoy' ? '同比变化(%)' : '环比变化(%)';
-            
+
+            navTrendChart.data.labels = dates.slice(startIdx, endIdx + 1);
             navTrendChart.data.datasets[0].label = typeLabels[type] + dataLabels[data];
-            navTrendChart.data.datasets[0].data = data === 'clicks' ? 
-                navTrendData[type].clicks : navTrendData[type].rate;
+            navTrendChart.data.datasets[0].data = (data === 'clicks' ? navTrendData[type].clicks : navTrendData[type].rate).slice(startIdx, endIdx + 1);
             navTrendChart.data.datasets[1].label = compareLabel;
-            navTrendChart.data.datasets[1].data = navTrendData[type].compare;
+            navTrendChart.data.datasets[1].data = navTrendData[type].compare.slice(startIdx, endIdx + 1);
             navTrendChart.update();
         }
         
@@ -2302,6 +2410,68 @@
                 }
             }
         });
+
+        // 更新首页核心指标根据所选日期区间
+        function updateCoreMetrics() {
+            const start = document.getElementById('coreStartDate')?.value;
+            const end = document.getElementById('coreEndDate')?.value;
+            const { startIdx, endIdx } = getRangeIndices(start, end);
+
+            const pv = trendData.pv.current.slice(startIdx, endIdx + 1).reduce((s, v) => s + Number(v), 0);
+            const uv = trendData.uv.current.slice(startIdx, endIdx + 1).reduce((s, v) => s + Number(v), 0);
+            const avgArr = trendData.avg.current.slice(startIdx, endIdx + 1).map(v => Number(v));
+            const avg = (avgArr.reduce((s, v) => s + v, 0) / avgArr.length).toFixed(2);
+            const bounceArr = trendData.bounce.current.slice(startIdx, endIdx + 1).map(v => Number(v));
+            const bounce = (bounceArr.reduce((s, v) => s + v, 0) / bounceArr.length).toFixed(1);
+
+            document.getElementById('corePV').textContent = pv.toLocaleString();
+            document.getElementById('coreUV').textContent = uv.toLocaleString();
+            document.getElementById('coreAvg').textContent = avg;
+            document.getElementById('coreBounce').textContent = bounce + '%';
+        }
+
+        // 初始化日期控件与默认值（核心指标默认昨日，其他模块默认MTD）
+        (function initDateFilters(){
+            const minISO = formatISO(dateObjs[0]);
+            const maxISO = formatISO(dateObjs[dateObjs.length-1]);
+
+            const allDateInputs = document.querySelectorAll('.filter-group input[type="date"]');
+            allDateInputs.forEach(inp=> { inp.min = minISO; inp.max = maxISO; });
+
+            const today = dateObjs[dateObjs.length-1];
+            const monthFirst = new Date(today.getFullYear(), today.getMonth(), 1);
+            const mtdStart = monthFirst < dateObjs[0] ? dateObjs[0] : monthFirst;
+            const mtdStartISO = formatISO(mtdStart);
+            const todayISO = formatISO(today);
+
+            const mtdIds = ['trendStartDate','trendEndDate','bannerStartDate','bannerEndDate','courseStartDate','courseEndDate','courseChartStartDate','courseChartEndDate','labStartDate','labEndDate','labChartStartDate','labChartEndDate','certStartDate','certEndDate','bottomStartDate','bottomEndDate','navStartDate','navEndDate'];
+            mtdIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (id.endsWith('StartDate')) el.value = mtdStartISO; else el.value = todayISO;
+            });
+
+            // 核心指标默认昨天
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yISO = formatISO(yesterday);
+            const coreStart = document.getElementById('coreStartDate');
+            const coreEnd = document.getElementById('coreEndDate');
+            if (coreStart) { coreStart.min = minISO; coreStart.max = maxISO; coreStart.value = yISO; }
+            if (coreEnd) { coreEnd.min = minISO; coreEnd.max = maxISO; coreEnd.value = yISO; }
+
+            // 初始刷新一次所有视图
+            updateCoreMetrics();
+            updateTrendChart();
+            updateBannerChart();
+            updateCourseTrendChart();
+            updateCourseChart();
+            updateLabTrendChart();
+            updateLabChart();
+            updateCertTrendChart();
+            updateBottomTrendChart();
+            updateNavTrendChart();
+        })();
     </script>
 </body>
 </html>
